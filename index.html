@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>synnbled — card</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <!-- Подключаем библиотеку Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <!-- Экран приветствия (дешифровка) -->
+  <div id="intro-loader" class="intro-loader">
+    <div class="intro-content">
+      <span class="intro-prompt">root@synnbled:~#</span>
+      <span id="intro-decrypt-text" class="intro-text">hello, friend.</span>
+    </div>
+  </div>
+
+  <canvas id="ambient-canvas"></canvas>
+
+  <!-- Панель терминала fsociety -->
+  <div id="fsociety-bar" class="fsociety-bar" hidden>
+    <span class="terminal-text">root@fsociety:~# hello, friend.</span>
+    <button type="button" id="exit-fsociety" class="exit-terminal-btn">[Exit Terminal]</button>
+  </div>
+
+  <main class="container">
+    <!-- Верхняя панель -->
+    <header class="top-bar">
+      <div class="brand">
+        <span class="brand-name">synnbled</span>
+        <button type="button" id="pronounce-btn" class="pronounce-btn" title="Listen to pronunciation" aria-label="Pronounce synnbled as sinnbleed">
+          <span>/sinnbleed/</span>
+          <span class="speaker-icon">🔊</span>
+        </button>
+      </div>
+
+      <div class="top-controls">
+        <button type="button" id="sfx-toggle" class="control-pill" title="Toggle UI Sound Effects">
+          <span id="sfx-icon">🔊</span>
+          <span id="sfx-label">SFX On</span>
+        </button>
+        <button type="button" id="theme-toggle" class="control-pill" aria-label="Toggle Theme">
+          <span class="icon-sun">☀️</span>
+          <span class="icon-moon">🌙</span>
+          <span id="theme-label">Dark</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Навигация по 3 страницам -->
+    <nav class="page-nav" aria-label="Main Navigation">
+      <button type="button" class="nav-tab active" data-page="profile">
+        <span class="nav-num">01</span> Profile
+      </button>
+      <button type="button" class="nav-tab" data-page="wall">
+        <span class="nav-num">02</span> Wall
+      </button>
+      <button type="button" class="nav-tab" data-page="dni">
+        <span class="nav-num">03</span> DNI
+      </button>
+    </nav>
+
+    <!-- Прямоугольный интерактивный арт-баннер (клик для смены) -->
+    <div class="glow-banner-wrapper">
+      <div class="glow-banner" id="banner-switcher" title="Click to switch banner">
+        <img src="banner.jpg" alt="Vibe Banner" class="banner-img" id="banner-img" />
+        <span class="banner-indicator" id="banner-indicator">1 / 4</span>
+      </div>
+    </div>
+
+    <!-- ==================== СТРАНИЦА 1: PROFILE & NOW PLAYING ==================== -->
+    <section id="page-profile" class="page-view active">
+      <div class="bento-grid">
+        
+        <!-- Баннер: Identity -->
+        <article class="banner banner-about">
+          <div class="banner-header">
+            <span class="badge">01 / IDENTITY</span>
+            <h2>About Me</h2>
+          </div>
+
+          <div class="info-block">
+            <h3>Typology & Pronouns <span class="sub-tag">(hover or tap)</span></h3>
+            <div class="pill-group interactive-group">
+              <button type="button" class="pill accent has-tip" data-tip="Pronouns: she/her or he/him">she/he</button>
+              <button type="button" class="pill has-tip" data-tip="Enneagram Tritype & Instincts: so/sx 5 · sp8 · sx4">sosx5sp8sx4</button>
+              <button type="button" class="pill has-tip" data-tip="Socionics: Logical Intuitive Introvert (Robespierre)">LII</button>
+              <button type="button" class="pill has-tip" data-tip="Psychosophy (Attitudinal Psyche): 1L 2V 3E 4F">LVEF</button>
+              <button type="button" class="pill has-tip" data-tip="Temperament: Choleric-Melancholic">Chol-Mel</button>
+            </div>
+          </div>
+
+          <div class="info-block">
+            <h3>Kinn List <span class="sub-tag">(source inside)</span></h3>
+            <div class="pill-group interactive-group">
+              <button type="button" id="elliot-pill" class="pill highlight has-tip" data-tip="Mr. Robot (irlest · double-tap me)">Elliot Alderson</button>
+              <button type="button" class="pill has-tip" data-tip="Genshin Impact">Dottore</button>
+              <button type="button" class="pill has-tip" data-tip="Mr. Robot">Tyrell Wellick</button>
+              <button type="button" class="pill has-tip" data-tip="Forgotten Island">Jo</button>
+              <button type="button" class="pill has-tip" data-tip="Genshin Impact">Barbara</button>
+              <button type="button" class="pill has-tip" data-tip="Honkai: Star Rail">Silver Wolf</button>
+              <button type="button" class="pill has-tip" data-tip="The Boys">The Deep</button>
+              <button type="button" class="pill has-tip" data-tip="Sherlock">Sherlock</button>
+              <button type="button" class="pill has-tip" data-tip="Evillious Chronicles">Gallerian Marlon</button>
+              <button type="button" class="pill has-tip" data-tip="Alien Stage">Isaac</button>
+            </div>
+          </div>
+
+          <div class="info-block">
+            <h3>Love List <span class="sub-tag">(note inside)</span></h3>
+            <div class="pill-group interactive-group">
+              <button type="button" class="pill love has-tip" data-tip="A truly comfortable person">Kabelft</button>
+              <button type="button" class="pill love has-tip" data-tip="My beloved best friend">Haru</button>
+              <button type="button" class="pill love has-tip" data-tip="A really good friend">Minau</button>
+              <button type="button" class="pill love has-tip" data-tip="My wonderful, sweet boyfriend">Ivan</button>
+              <button type="button" class="pill love has-tip" data-tip="Just to be like Elliot Alderson lol">Coding</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Правая колонка: Кассета Now Playing + Контакты -->
+        <div class="right-column">
+          
+          <!-- Блок Now Playing с кассетой -->
+          <article class="banner banner-cassette">
+            <div class="cassette-header">
+              <span class="badge">NOW PLAYING · SIDE A</span>
+              <div class="equalizer" id="equalizer">
+                <span></span><span></span><span></span><span></span>
+              </div>
+            </div>
+
+            <div class="cassette-deck" id="cassette-deck">
+              <div class="cassette-label">
+                <div class="track-meta">
+                  <span class="track-title">The Beach</span>
+                  <span class="track-artist">The Neighbourhood</span>
+                </div>
+                <span class="tape-type">TYPE II · 90m</span>
+              </div>
+
+              <div class="cassette-window">
+                <div class="reel left-reel">
+                  <div class="reel-spokes"></div>
+                </div>
+                <div class="tape-bridge"></div>
+                <div class="reel right-reel">
+                  <div class="reel-spokes"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="cassette-controls">
+              <button type="button" id="play-tape-btn" class="play-tape-btn">
+                <span id="play-tape-icon">▶</span>
+                <span id="play-tape-text">Play Preview</span>
+              </button>
+              <a href="https://open.spotify.com/search/The%20Neighbourhood%20The%20Beach" target="_blank" rel="noopener noreferrer" class="spotify-link">
+                Open Track ↗
+              </a>
+            </div>
+          </article>
+
+          <!-- Баннер: Связь -->
+          <article class="banner banner-contact">
+            <div class="banner-header">
+              <span class="badge">CONNECT</span>
+              <h2>Contact</h2>
+            </div>
+            <p class="contact-desc">Make sure you pass the DNI check on tab 03 before reaching out.</p>
+            
+            <div class="contact-links">
+              <button type="button" class="contact-card" data-copy="@synnbled">
+                <div class="contact-info">
+                  <span class="platform">Everywhere</span>
+                  <span class="handle">@synnbled</span>
+                </div>
+                <span class="copy-status">Copy</span>
+              </button>
+
+              <a href="https://www.tiktok.com/@deweycockcleaner" target="_blank" rel="noopener noreferrer" class="contact-card">
+                <div class="contact-info">
+                  <span class="platform">TikTok</span>
+                  <span class="handle">@deweycockcleaner</span>
+                </div>
+                <span class="arrow">↗</span>
+              </a>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== СТРАНИЦА 2: INTERACTIVE WALL ==================== -->
+    <section id="page-wall" class="page-view" hidden>
+      <article class="banner banner-wall">
+        <div class="banner-header">
+          <span class="badge">02 / GUESTBOOK</span>
+          <h2>Interactive Wall</h2>
+          <p class="dni-hint">Leave a note, a song rec, or a trace before you go.</p>
+        </div>
+
+        <form id="wall-form" class="wall-form">
+          <div class="wall-inputs-row">
+            <input type="text" id="wall-author" placeholder="Your alias (or leave empty for anon)" maxlength="24" autocomplete="off" />
+            <div class="tag-selector" id="wall-tag-selector">
+              <button type="button" class="w-tag active" data-tag="vibe">✦ vibe</button>
+              <button type="button" class="w-tag" data-tag="fsociety"># fsociety</button>
+              <button type="button" class="w-tag" data-tag="kinn">★ kinn</button>
+              <button type="button" class="w-tag" data-tag="note">✎ note</button>
+            </div>
+          </div>
+          <div class="wall-submit-row">
+            <input type="text" id="wall-message" placeholder="Write something on the wall..." maxlength="160" required autocomplete="off" />
+            <button type="submit" class="wall-post-btn">Post</button>
+          </div>
+        </form>
+
+        <div id="wall-grid" class="wall-grid"></div>
+      </article>
+    </section>
+
+    <!-- ==================== СТРАНИЦА 3: DNI & VIBE CHECK ==================== -->
+    <section id="page-dni" class="page-view" hidden>
+      <article class="banner banner-dni">
+        <div class="dni-top">
+          <div class="banner-header">
+            <span class="badge danger">03 / BOUNDARIES</span>
+            <h2>Do Not Interact <span id="dni-count" class="count-pill">0</span></h2>
+            <p class="dni-hint">Tap any tag that applies to you to test compatibility:</p>
+          </div>
+          <div class="dni-controls">
+            <button type="button" id="random-dni-btn" class="random-dni-btn" title="Random DNI Vibe Check">🎲</button>
+            <div class="search-box">
+              <input type="text" id="dni-search" placeholder="Filter DNI list..." autocomplete="off" />
+            </div>
+          </div>
+        </div>
+
+        <div id="dni-checker-bar" class="dni-checker-bar safe">
+          <div class="checker-status">
+            <span id="checker-badge" class="checker-badge">0 matches</span>
+            <span id="checker-verdict" class="checker-verdict">Clear to interact — welcome.</span>
+          </div>
+          <div class="checker-actions">
+            <button type="button" id="share-dni-btn" class="share-dni-btn" hidden>Copy Card</button>
+            <button type="button" id="reset-dni-btn" class="reset-dni-btn" hidden>Reset</button>
+          </div>
+        </div>
+
+        <div id="dni-list" class="dni-tags-container"></div>
+      </article>
+    </section>
+
+    <footer class="site-footer">
+      <p>take care of yourself · keep yourself safe ✦</p>
+    </footer>
+  </main>
+
+  <div id="floating-tooltip" class="floating-tooltip" role="tooltip"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
